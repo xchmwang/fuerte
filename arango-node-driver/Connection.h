@@ -50,11 +50,16 @@ class Connection : public Nan::ObjectWrap {
   static NAN_METHOD(Run);
   static NAN_METHOD(Address);
   static NAN_METHOD(New);
+
+  static NAN_METHOD(setPostReq);
+  static NAN_METHOD(setPostField);
+  static NAN_METHOD(setBuffer);
+
   static NAN_MODULE_INIT(Init);
   static v8::Local<v8::Value> NewInstance(v8::Local<v8::Value> arg);
 
- private:
   Ptr _pConnection;
+ private:
   static Nan::Persistent<v8::Function> _constructor; //ok to copy persistent?
 };
 

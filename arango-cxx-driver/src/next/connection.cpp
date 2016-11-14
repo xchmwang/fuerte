@@ -2,6 +2,7 @@
 #include <fuerte/next/database.h>
 #include <boost/algorithm/string.hpp>
 
+#include <vector>
 namespace arangocxx {
   using namespace arangocxx::detail;
 

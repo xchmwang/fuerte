@@ -22,6 +22,8 @@
 #include <fuerte/HttpConnection.h>
 #include <iostream>
 
+#include "v8.h"
+#include "nan.h"
 #include "Connection.h"
 #include "Server.h"
 
@@ -71,6 +73,34 @@ NAN_MODULE_INIT(Connection::Init) {
   _constructor.Reset(tpl->GetFunction());
   target->Set(Nan::New("Connection").ToLocalChecked(), tpl->GetFunction());
 }
+
+NAN_METHOD(setPostReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPostReq();
+}
+
+NAN_METHOD(setPostField){
+  //unpack buffer
+  auto bufferObj = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+  char* bufferData = node::Buffer::Data(bufferObj);
+  size_t bufferLength = node::Buffer::Length(bufferObj);
+  std::string v8BufferAsString(bufferData, bufferLength);
+
+  //get connection
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+
+  //put buffer on connection
+  pLibCon->setPostField(v8BufferAsString);
+
+}
+NAN_METHOD(setBuffer){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPostReq();
+}
+
 
 NAN_METHOD(Connection::EnumValues) {
   typedef arangodb::dbinterface::Connection::Format Format;
