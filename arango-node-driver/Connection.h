@@ -50,9 +50,8 @@ class Connection : public Nan::ObjectWrap {
   static NAN_METHOD(Run);
   static NAN_METHOD(Address);
   static NAN_METHOD(New);
-
-  static NAN_METHOD(setPostReq);
   static NAN_METHOD(setPostField);
+  static NAN_METHOD(setPostReq);
   static NAN_METHOD(setBuffer);
 
   static NAN_MODULE_INIT(Init);

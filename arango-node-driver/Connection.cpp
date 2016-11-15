@@ -67,6 +67,9 @@ NAN_MODULE_INIT(Connection::Init) {
   Nan::SetPrototypeMethod(tpl, "IsRunning", Connection::IsRunning);
   Nan::SetPrototypeMethod(tpl, "SetAsynchronous", Connection::SetAsynchronous);
   Nan::SetPrototypeMethod(tpl, "ResponseCode", Connection::ResponseCode);
+  Nan::SetPrototypeMethod(tpl, "setPostField", Connection::setPostField);
+  Nan::SetPrototypeMethod(tpl, "setPostReq", Connection::setPostReq);
+  Nan::SetPrototypeMethod(tpl, "setBuffer", Connection::setBuffer);
 
   // Provides Javascript with Connection constructor
   // function
@@ -74,13 +77,8 @@ NAN_MODULE_INIT(Connection::Init) {
   target->Set(Nan::New("Connection").ToLocalChecked(), tpl->GetFunction());
 }
 
-NAN_METHOD(setPostReq){
-  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
-  Connection::Ptr pLibCon = pCon->_pConnection;
-  pLibCon->setPostReq();
-}
-
-NAN_METHOD(setPostField){
+////
+NAN_METHOD(Connection::setPostField){
   //unpack buffer
   auto bufferObj = Nan::To<v8::Object>(info[0]).ToLocalChecked();
   char* bufferData = node::Buffer::Data(bufferObj);
@@ -95,12 +93,18 @@ NAN_METHOD(setPostField){
   pLibCon->setPostField(v8BufferAsString);
 
 }
-NAN_METHOD(setBuffer){
+NAN_METHOD(Connection::setPostReq){
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
   pLibCon->setPostReq();
 }
 
+NAN_METHOD(Connection::setBuffer){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPostReq();
+}
+////
 
 NAN_METHOD(Connection::EnumValues) {
   typedef arangodb::dbinterface::Connection::Format Format;

@@ -1,4 +1,6 @@
-var node = require('bindings')('arango-node-driver');
+var node = require('bindings')('node-arangodb');
+var vpack = require(__dirname + "/node_modules/node-velocypack/build/Debug/node-velocypack.node")
+//var velocypack = require('bindings')('node-velocypack');
 
 // create server
 var server = new node.Server("http://127.0.0.1:8529");
@@ -17,6 +19,13 @@ var collection = new node.Collection(database, "dackel")
 // the format enum in collection.h unfortunatly it
 // is modifiable. should be probably some kind of
 // frozen or sealed object
+
+request_data = vpack.encode({"request" : "body"})
+con1.setPostReq();
+con1.setPostField(request_data)
+con1.setBuffer();
+
+
 
 var val = con1.EnumValues(); // what is this?
 console.log("---------------------------------");
@@ -39,6 +48,8 @@ server.version(con1);
 server.version(con2);
 console.log("---------------------------------");
 console.log("start tests");
+
+
 console.log("\n\ntest1:")
 var loops = 0;
 sink = con1.SetAsynchronous(false);
@@ -49,6 +60,7 @@ do {
 console.log("Sync connection result : " + con1.Result());
 console.log("Sync connection loops : " + loops);
 console.log("Sync response code : " + con1.ResponseCode());
+
 
 console.log("\n\ntest2:")
 loops = 0;
@@ -65,6 +77,7 @@ console.log("ASync response code : " + con2.ResponseCode());
 server.version(con1);
 server.version(con2);
 
+
 console.log("\n\ntest3:")
 loops = 0;
 con1.SetAsynchronous(true);
@@ -75,6 +88,7 @@ do {
 console.log("Async connection result : " + con1.Result());
 console.log("Async connection loops : " + loops);
 console.log("Async response code : " + con1.ResponseCode());
+
 
 console.log("\n\ntest4:")
 loops = 0;
@@ -87,3 +101,6 @@ console.log(con2.Result());
 console.log("Sync connection result : " + con2.Result());
 console.log("Sync connection loops : " + loops);
 console.log("Sync response code : " + con2.ResponseCode());
+
+
+
