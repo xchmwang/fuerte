@@ -16,6 +16,7 @@ class ConnectionUrl : public Nan::ObjectWrap {
 
     Nan::SetPrototypeMethod(tpl, "setServerUrl", ConnectionUrl::setServerUrl);
     Nan::SetPrototypeMethod(tpl, "setDbName", ConnectionUrl::setDbName);
+    Nan::SetPrototypeMethod(tpl, "setTailUrl", ConnectionUrl::setTailUrl);
 
     constructor().Reset(tpl->GetFunction());
     target->Set( Nan::New("ConnectionUrl").ToLocalChecked() , tpl->GetFunction()); //put in module init?!
@@ -24,6 +25,7 @@ class ConnectionUrl : public Nan::ObjectWrap {
   static NAN_METHOD(New);
   static NAN_METHOD(setServerUrl);
   static NAN_METHOD(setDbName);
+  static NAN_METHOD(setTailUrl);
 
   arangodb::dbinterface::ConnectionUrl* cppClass() {
     return &_cpp;

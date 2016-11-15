@@ -5,6 +5,9 @@ var vpack = require(__dirname + "/node_modules/node-velocypack/build/Debug/node-
 var serverUrl = "http://127.0.0.1:8529"
 serverUrl = "vstream://127.0.0.1:8529"
 
+http://host:8529/_api/collecion -d '{"name":"test","resplicationFactor":5}'
+
+
 var server = new node.Server(serverUrl);
 
 //create connections
@@ -22,18 +25,25 @@ var collection = new node.Collection(database, "dackel")
 // is modifiable. should be probably some kind of
 // frozen or sealed object
 
+
+//create post
+
+//set url path
 conUrl = new node.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
-conUrl.setDbName("_db")
+conUrl.setDbName("collection")
+conUrl.setTailUrl("/dfasdfsad/sdafdfsf")
+
+
+conn.setHeaderOpts();
 conn.setUrl(conUrl)
-
-conn.setPostReq();
-request_data = vpack.encode({"request" : "body"})
+request_data = vpack.encode({"name" : "test"})
 conn.setPostField(request_data)
-
+conn.setPostReq();
 conn.setBuffer();
 
 
+//fire request
 console.log("\n\ntest:")
 var loops = 0;
 sink = conn.SetAsynchronous(false);

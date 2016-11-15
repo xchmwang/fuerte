@@ -74,6 +74,7 @@ NAN_MODULE_INIT(Connection::Init) {
   Nan::SetPrototypeMethod(tpl, "setPostField", Connection::setPostField);
   Nan::SetPrototypeMethod(tpl, "setPostReq", Connection::setPostReq);
   Nan::SetPrototypeMethod(tpl, "setBuffer", Connection::setBuffer);
+  Nan::SetPrototypeMethod(tpl, "setHeaderOpts", Connection::setHeaderOpts);
   Nan::SetPrototypeMethod(tpl, "setUrl", Connection::setUrl);
 
   // Provides Javascript with Connection constructor
@@ -114,6 +115,12 @@ NAN_METHOD(Connection::setBuffer){
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
   pLibCon->setPostReq();
+}
+
+NAN_METHOD(Connection::setHeaderOpts){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setHeaderOpts();
 }
 
 NAN_METHOD(Connection::setUrl){

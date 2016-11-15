@@ -376,6 +376,13 @@ Connection& VppConnection::reset() {
 }
 
 void VppConnection::setUrl(const Url& inp) {
+
+  std::cout << "hello form setUrl" << std::endl
+            << inp.serverUrl() << std::endl
+            << inp.dbName() << std::endl
+            << inp.tailUrl() << std::endl
+            ;
+
   namespace velocypack = arangodb::velocypack;
   using velocypack::ValueType;
   using velocypack::Value;

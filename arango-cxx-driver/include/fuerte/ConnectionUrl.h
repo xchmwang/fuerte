@@ -33,6 +33,9 @@ class ConnectionUrl {
   const std::string& dbName() const;
   void setServerUrl(const std::string& inp);
   void setDbName(const std::string& inp);
+  void setTailUrl(const std::string& inp){
+    _tailUrl += inp;
+  }
   ConnectionUrl& operator+=(const std::string& inp);
   std::string httpUrl() const;
   const std::string& tailUrl() const;

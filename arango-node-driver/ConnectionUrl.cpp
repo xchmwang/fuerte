@@ -28,6 +28,16 @@ NAN_METHOD(ConnectionUrl::setServerUrl) {
   connUrl->setServerUrl(tmp_string);
 }
 
+NAN_METHOD(ConnectionUrl::setTailUrl) {
+  if (info.Length() != 1 ) {
+    Nan::ThrowTypeError("Not 1 Argument");
+  }
+  std::string tmp_string(*Nan::Utf8String(info[0]),Nan::Utf8String(info[0]).length());
+  auto connUrl = Nan::ObjectWrap::Unwrap<ConnectionUrl>(info.Holder()->ToObject())->cppClass();
+  std::cout << connUrl << std::endl;
+  connUrl->setTailUrl(tmp_string);
+}
+
 NAN_METHOD(ConnectionUrl::setDbName) {
   if (info.Length() != 1 ) {
     Nan::ThrowTypeError("Not 1 Argument");
