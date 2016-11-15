@@ -6,6 +6,7 @@ add_subdirectory(arango-cxx-driver)
 
 add_library(node-arangodb SHARED
     Connection.cpp
+    ConnectionUrl.cpp
     init.cpp
     Server.cpp
     Database.cpp

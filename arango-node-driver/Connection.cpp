@@ -25,6 +25,7 @@
 #include "v8.h"
 #include "nan.h"
 #include "Connection.h"
+#include "ConnectionUrl.h"
 #include "Server.h"
 
 namespace arangodb {
@@ -70,6 +71,7 @@ NAN_MODULE_INIT(Connection::Init) {
   Nan::SetPrototypeMethod(tpl, "setPostField", Connection::setPostField);
   Nan::SetPrototypeMethod(tpl, "setPostReq", Connection::setPostReq);
   Nan::SetPrototypeMethod(tpl, "setBuffer", Connection::setBuffer);
+  Nan::SetPrototypeMethod(tpl, "setUrl", Connection::setUrl);
 
   // Provides Javascript with Connection constructor
   // function
@@ -103,6 +105,12 @@ NAN_METHOD(Connection::setBuffer){
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
   pLibCon->setPostReq();
+}
+
+NAN_METHOD(Connection::setUrl){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setUrl(*Nan::ObjectWrap::Unwrap<ConnectionUrl>(info[0]->ToObject())->cppClass());
 }
 ////
 

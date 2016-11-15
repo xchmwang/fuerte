@@ -11,7 +11,7 @@
     "node-velocypack": "git+https://github.com/arangodb/node-velocypack.git"
   },
   "scripts": {
-    "test": "node getVer.js",
+    "test": "node testPost.js",
     "install": "cmake-js compile -D"
   },
   "gypfile": true

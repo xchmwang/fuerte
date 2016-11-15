@@ -23,6 +23,7 @@
 
 #include "init.h"
 #include "Connection.h"
+#include "ConnectionUrl.h"
 #include "Server.h"
 #include "Database.h"
 #include "Collection.h"
@@ -33,6 +34,7 @@ namespace arangodb { namespace dbnodejs {
 void InitAll(v8::Local<v8::Object> exports) {
   std::cout << "About to init classes" << std::endl;
   Connection::Init(exports);
+  ConnectionUrl::Init(exports);
   Server::Init(exports);
   Database::Init(exports);
   Collection::Init(exports);

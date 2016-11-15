@@ -20,13 +20,6 @@ var collection = new node.Collection(database, "dackel")
 // is modifiable. should be probably some kind of
 // frozen or sealed object
 
-request_data = vpack.encode({"request" : "body"})
-con1.setPostReq();
-con1.setPostField(request_data)
-con1.setBuffer();
-
-
-
 var val = con1.EnumValues(); // what is this?
 console.log("---------------------------------");
 console.log("print EnumValues");
