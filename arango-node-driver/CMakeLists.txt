@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(node-arangodb)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC") #curlpp has broken build system
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC --std=c++14") #curlpp has broken build system
 add_subdirectory(arango-cxx-driver)
 
 add_library(node-arangodb SHARED

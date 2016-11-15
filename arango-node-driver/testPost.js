@@ -3,6 +3,7 @@ var vpack = require(__dirname + "/node_modules/node-velocypack/build/Debug/node-
 
 // create server
 var serverUrl = "http://127.0.0.1:8529"
+serverUrl = "vstream://127.0.0.1:8529"
 
 var server = new node.Server(serverUrl);
 

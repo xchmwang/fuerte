@@ -19,6 +19,9 @@
 ///
 /// @author John Bufton
 ////////////////////////////////////////////////////////////////////////////////
+#include <velocypack/Slice.h>
+#include <velocypack/Buffer.h>
+
 #include <fuerte/HttpConnection.h>
 #include <iostream>
 
@@ -85,14 +88,20 @@ NAN_METHOD(Connection::setPostField){
   auto bufferObj = Nan::To<v8::Object>(info[0]).ToLocalChecked();
   char* bufferData = node::Buffer::Data(bufferObj);
   size_t bufferLength = node::Buffer::Length(bufferObj);
-  std::string v8BufferAsString(bufferData, bufferLength);
+
+  auto vbuffer = std::make_shared<::arangodb::velocypack::Buffer<uint8_t>>();
+  vbuffer->append(bufferData, bufferLength);
+
+
+  std::cout << "connection.cpp" << __LINE__ << ::arangodb::velocypack::Slice(vbuffer->data()).toJson();
+
 
   //get connection
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
 
   //put buffer on connection
-  pLibCon->setPostField(v8BufferAsString);
+  pLibCon->setPostField(vbuffer);
 
 }
 NAN_METHOD(Connection::setPostReq){
