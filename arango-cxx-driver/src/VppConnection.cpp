@@ -53,8 +53,9 @@ Header::Common::MsgId VppConnection::nextID() {
   return nHashVal;
 }
 
-VppConnection::VppConnection() : Connection(), _service{}, _socket(_service) {
+VppConnection::VppConnection() : Connection(), _service{}, _socket(_service), _vpacks(){
   _buffer.reserve(BufSize);
+  _vpacks.resize(2);
 }
 
 void VppConnection::setHeaderOpts() {
@@ -401,6 +402,7 @@ void VppConnection::setUrl(const Url& inp) {
   _request.add(ReqName::port, Value(port));
   _request.add(ReqName::server, Value(url));
   url = inp.tailUrl();
+  std::cout << url << std::endl;
   _request.add(ReqName::request, Value(url));
   _request.add(ReqName::parameter, Value(ValueType::Object));
   for (const ConOption& opt : _queries) {
@@ -453,7 +455,9 @@ void VppConnection::setPostField(const std::string& inp) {
   _vpacks[VpData] = vpack(ptr, sz);
 }
 
-void VppConnection::setPostField(const VPack data) { _vpacks[VpData] = data; }
+void VppConnection::setPostField(const VPack data){
+  _vpacks[VpData] = data;
+}
 
 //
 //  Create the request VPack

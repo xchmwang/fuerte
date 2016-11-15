@@ -5,42 +5,25 @@ var vpack = require(__dirname + "/node_modules/node-velocypack/build/Debug/node-
 var serverUrl = "http://127.0.0.1:8529"
 serverUrl = "vstream://127.0.0.1:8529"
 
-http://host:8529/_api/collecion -d '{"name":"test","resplicationFactor":5}'
-
-
 var server = new node.Server(serverUrl);
-
-//create connections
 var conn = server.makeConnection();
-
-// create database hund
-var database = new node.Database(server, "hund");
-
-// create  collection
-database.create(conn);
-var collection = new node.Collection(database, "dackel")
-
-// creates some object that is an equivaltent to
-// the format enum in collection.h unfortunatly it
-// is modifiable. should be probably some kind of
-// frozen or sealed object
-
 
 //create post
 
 //set url path
 conUrl = new node.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
-conUrl.setDbName("collection")
-conUrl.setTailUrl("/dfasdfsad/sdafdfsf")
-
-
-conn.setHeaderOpts();
-conn.setUrl(conUrl)
+conUrl.setDbName("esel")
+conUrl.setTailUrl("/hund/sdafdfsf")
 request_data = vpack.encode({"name" : "test"})
-conn.setPostField(request_data)
+
+//exact order as in create document (VppConnection)
 conn.setPostReq();
-conn.setBuffer();
+conn.setPostField(request_data)
+conn.setUrl(conUrl)
+conn.setHeaderOpts();
+conn.setBuffer(); //must be last
+
 
 
 //fire request
