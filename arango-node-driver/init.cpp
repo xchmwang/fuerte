@@ -32,7 +32,6 @@
 namespace arangodb { namespace dbnodejs {
 
 void InitAll(v8::Local<v8::Object> exports) {
-  std::cout << "About to init classes" << std::endl;
   Connection::Init(exports);
   ConnectionUrl::Init(exports);
   Server::Init(exports);
