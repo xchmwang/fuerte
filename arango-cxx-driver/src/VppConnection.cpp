@@ -53,9 +53,14 @@ Header::Common::MsgId VppConnection::nextID() {
   return nHashVal;
 }
 
-VppConnection::VppConnection() : Connection(), _service{}, _socket(_service), _vpacks(){
+VppConnection::VppConnection()
+  : Connection()
+  , _service{}
+  , _socket(_service)
+ // , _vpacks()
+{
   _buffer.reserve(BufSize);
-  _vpacks.resize(2);
+ // _vpacks.resize(2);
 }
 
 void VppConnection::setHeaderOpts() {

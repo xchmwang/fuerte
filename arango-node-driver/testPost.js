@@ -6,25 +6,35 @@ var serverUrl = "http://127.0.0.1:8529"
 serverUrl = "vstream://127.0.0.1:8529"
 
 var server = new node.Server(serverUrl);
+
+//create connections
 var conn = server.makeConnection();
+
+
+/////////////////////////////////////////////////////////////
+// if these functions are not executed the program with
+// terminate with a segfault
+//
+ var database = new node.Database(server, "hund");
+ database.create(conn);
+ var collection = new node.Collection(database, "dackel")
+/////////////////////////////////////////////////////////////
 
 //create post
 
 //set url path
 conUrl = new node.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
-conUrl.setDbName("esel")
-conUrl.setTailUrl("/hund/sdafdfsf")
-request_data = vpack.encode({"name" : "test"})
+conUrl.setDbName("collection")
+conUrl.setTailUrl("/dfasdfsad/sdafdfsf")
 
-//exact order as in create document (VppConnection)
-conn.reset();
-conn.setPostReq();
-conn.setPostField(request_data)
-conn.setUrl(conUrl)
+//conn.reset() // results in operaton canelled
 conn.setHeaderOpts();
-conn.setBuffer(); //must be last
-
+conn.setUrl(conUrl)
+request_data = vpack.encode({"name" : "test"})
+conn.setPostField(request_data)
+conn.setPostReq();
+conn.setBuffer();
 
 
 //fire request
