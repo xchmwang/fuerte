@@ -1,46 +1,30 @@
-var node = require('bindings')('node-arangodb');
-var vpack = require(__dirname + "/node_modules/node-velocypack/build/Debug/node-velocypack.node")
+var arangodb = require('bindings')('arangodb-arangodb');
+var vpack = require(__dirname + "/arangodb_modules/arangodb-velocypack/build/Debug/arangodb-velocypack.arangodb")
 
 // create server
 var serverUrl = "http://127.0.0.1:8529"
 serverUrl = "vstream://127.0.0.1:8529"
-
-var server = new node.Server(serverUrl);
+var server = new arangodb.Server(serverUrl);
 
 //create connections
 var conn = server.makeConnection();
 
-
-/////////////////////////////////////////////////////////////
-// if these functions are not executed the program with
-// terminate with a segfault
-//
- //var database = new node.Database(server, "hund");
-
- //database.create(conn);
-
-/////////////////////////////////////////////////////////////
-// var collection = new node.Collection(database, "dackel")
-
 //create post
-
-//set url path
-conUrl = new node.ConnectionUrl()
+conUrl = new arangodb.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
-conUrl.setDbName("collection")
-conUrl.setTailUrl("/dfasdfsad/sdafdfsf")
+conUrl.setDbName("testdb")
+conUrl.setTailUrl("/something")
 
-conn.reset() // results in operaton canelled
+conn.reset() // must be called first
 conn.setHeaderOpts();
 conn.setUrl(conUrl)
-request_data = vpack.encode({"name" : "test"})
+request_data = vpack.encode({"name" : "testdb"})
 conn.setPostField(request_data)
 conn.setPostReq();
-conn.setBuffer();
+conn.setBuffer(); // must be called last
 
 
 //fire request
-console.log("\n\ntest:")
 sink = conn.SetAsynchronous(false);
 new Promise((resolve, reject) => {
  function run() {
@@ -58,7 +42,9 @@ new Promise((resolve, reject) => {
  run();
 })
 .then(() => {
-  console.log("Sync connection result : " + conn.Result());
+  let vpResult = conn.Result();
+  jsResult = vpack.decode(vpResult)
+  console.log("Sync connection result : " + conn.result);
   console.log("Sync response code : " + conn.ResponseCode());
 })
 .catch((e) => {
