@@ -18,6 +18,7 @@ conUrl.setTailUrl("/hund/sdafdfsf")
 request_data = vpack.encode({"name" : "test"})
 
 //exact order as in create document (VppConnection)
+conn.reset();
 conn.setPostReq();
 conn.setPostField(request_data)
 conn.setUrl(conUrl)

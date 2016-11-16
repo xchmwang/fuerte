@@ -55,6 +55,7 @@ class Connection : public Nan::ObjectWrap {
   static NAN_METHOD(setBuffer);
   static NAN_METHOD(setHeaderOpts);
   static NAN_METHOD(setUrl);
+  static NAN_METHOD(reset);
 
   static NAN_MODULE_INIT(Init);
   static v8::Local<v8::Value> NewInstance(v8::Local<v8::Value> arg);
