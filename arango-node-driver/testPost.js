@@ -41,12 +41,26 @@ conn.setBuffer();
 
 //fire request
 console.log("\n\ntest:")
-var loops = 0;
 sink = conn.SetAsynchronous(false);
-do {
-  ++loops;
-  conn.Run();
-} while (conn.IsRunning());
-console.log("Sync connection result : " + conn.Result());
-console.log("Sync connection loops : " + loops);
-console.log("Sync response code : " + conn.ResponseCode());
+new Promise((resolve, reject) => {
+ function run() {
+   try {
+     conn.Run();
+     if (conn.IsRunning()) {
+       setImmediate(run);
+     } else {
+       resolve();
+     }
+   } catch (e) {
+     reject(e);
+   }
+ }
+ run();
+})
+.then(() => {
+  console.log("Sync connection result : " + conn.Result());
+  console.log("Sync response code : " + conn.ResponseCode());
+})
+.catch((e) => {
+  console.error(e.stack);
+});
