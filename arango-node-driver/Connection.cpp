@@ -115,7 +115,7 @@ NAN_METHOD(Connection::setPostReq){
 NAN_METHOD(Connection::setBuffer){
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
-  pLibCon->setPostReq();
+  pLibCon->setBuffer();
 }
 
 NAN_METHOD(Connection::setHeaderOpts){

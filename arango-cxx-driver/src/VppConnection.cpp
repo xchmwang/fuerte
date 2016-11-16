@@ -57,10 +57,11 @@ VppConnection::VppConnection()
   : Connection()
   , _service{}
   , _socket(_service)
- // , _vpacks()
+  , _vpacks()
 {
   _buffer.reserve(BufSize);
- // _vpacks.resize(2);
+  _vpacks.resize(2);
+  std::cout << this << " ctor" << std::endl;
 }
 
 void VppConnection::setHeaderOpts() {
@@ -96,6 +97,7 @@ void VppConnection::errorHandler(const std::string& msg) {
     b.add(Value(0));
     b.close();
     _vpacks[VpRes] = b.steal();
+    std::cout << this << " vpres" << std::endl;
   }
   {
     Builder b;
@@ -103,6 +105,7 @@ void VppConnection::errorHandler(const std::string& msg) {
     b.add("errorMessage", Value(msg));
     b.close();
     _vpacks[VpData] = b.steal();
+    std::cout << this << " data1" << std::endl;
   }
   _mode = Mode::RunError;
 }
@@ -284,6 +287,7 @@ void VppConnection::unpackChunks() {
     return;
   }
   _vpacks.clear();
+  std::cout << this << " clear" << std::endl;
   {
     //  Consolidate the chunk data
     Header::Common::Chunks::iterator iChnk = _chnks.begin();
@@ -309,6 +313,7 @@ void VppConnection::unpackChunks() {
       arangodb::velocypack::Slice slice{&(*iData)};
       size_t szVPack = slice.byteSize();
       vpack->append(reinterpret_cast<const char*>(&(*iData)), szVPack);
+      std::cout << this << " push_back" << std::endl;
       _vpacks.push_back(vpack);
       iData += szVPack;
     }
@@ -374,6 +379,7 @@ Connection& VppConnection::reset() {
   _vpacks.resize(2);
   _vpacks[0] = nullptr;
   _vpacks[1] = nullptr;
+  std::cout << this << " reset" << std::endl;
   _request.clear();
   _request.add(Value(ValueType::Object));
   _service.reset();
@@ -407,7 +413,7 @@ void VppConnection::setUrl(const Url& inp) {
   _request.add(ReqName::port, Value(port));
   _request.add(ReqName::server, Value(url));
   url = inp.tailUrl();
-  std::cout << url << std::endl;
+  std::cout << "final URL:"  <<  url << std::endl;
   _request.add(ReqName::request, Value(url));
   _request.add(ReqName::parameter, Value(ValueType::Object));
   for (const ConOption& opt : _queries) {
@@ -457,11 +463,13 @@ void VppConnection::setPatchReq() {
 void VppConnection::setPostField(const std::string& inp) {
   const uint8_t* ptr = reinterpret_cast<const uint8_t*>(&inp.front());
   std::string::size_type sz = inp.size();
-  _vpacks[VpData] = vpack(ptr, sz);
+  _vpacks.at(VpData) = vpack(ptr, sz);
+  std::cout << this << " data2" << std::endl;
 }
 
 void VppConnection::setPostField(const VPack data){
-  _vpacks[VpData] = data;
+  _vpacks.at(VpData) = data;
+  std::cout << this << " data3" << std::endl;
 }
 
 //
@@ -492,10 +500,12 @@ void VppConnection::reqVPack() {
   b.add(sVal);
   b.close();
   _vpacks[VpRes] = b.steal();
+  std::cout << this << " res" << std::endl;
 }
 
 void VppConnection::setBuffer() {
   _request.close();
+  std::cout << "sexmann" << _request.slice().toJson() << std::endl;
   reqVPack();
   getConnection();
 }
@@ -528,14 +538,14 @@ void VppConnection::run() {
 
 bool VppConnection::isRunning() const { return _mode == Mode::AsyncRun; }
 
-Connection::VPack VppConnection::result() const { return _vpacks[VpData]; }
+Connection::VPack VppConnection::result() const { return _vpacks.at(VpData); }
 
 long VppConnection::responseCode() {
   typedef arangodb::velocypack::Builder Builder;
   using arangodb::velocypack::Slice;
   using arangodb::velocypack::Value;
   using arangodb::velocypack::ValueType;
-  Slice sRes{_vpacks[VpRes]->data()};
+  Slice sRes{_vpacks.at(VpRes)->data()};
   Slice sObj{sRes[VpResIdx]};
   return sObj.getInt();
 }

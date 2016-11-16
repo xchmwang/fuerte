@@ -15,10 +15,12 @@ var conn = server.makeConnection();
 // if these functions are not executed the program with
 // terminate with a segfault
 //
- var database = new node.Database(server, "hund");
- database.create(conn);
- var collection = new node.Collection(database, "dackel")
+ //var database = new node.Database(server, "hund");
+
+ //database.create(conn);
+
 /////////////////////////////////////////////////////////////
+// var collection = new node.Collection(database, "dackel")
 
 //create post
 
@@ -28,7 +30,7 @@ conUrl.setServerUrl(serverUrl)
 conUrl.setDbName("collection")
 conUrl.setTailUrl("/dfasdfsad/sdafdfsf")
 
-//conn.reset() // results in operaton canelled
+conn.reset() // results in operaton canelled
 conn.setHeaderOpts();
 conn.setUrl(conUrl)
 request_data = vpack.encode({"name" : "test"})
