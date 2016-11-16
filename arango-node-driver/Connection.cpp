@@ -72,11 +72,16 @@ NAN_MODULE_INIT(Connection::Init) {
   Nan::SetPrototypeMethod(tpl, "SetAsynchronous", Connection::SetAsynchronous);
   Nan::SetPrototypeMethod(tpl, "ResponseCode", Connection::ResponseCode);
   Nan::SetPrototypeMethod(tpl, "setPostField", Connection::setPostField);
-  Nan::SetPrototypeMethod(tpl, "setPostReq", Connection::setPostReq);
   Nan::SetPrototypeMethod(tpl, "setBuffer", Connection::setBuffer);
   Nan::SetPrototypeMethod(tpl, "setHeaderOpts", Connection::setHeaderOpts);
   Nan::SetPrototypeMethod(tpl, "setUrl", Connection::setUrl);
   Nan::SetPrototypeMethod(tpl, "reset", Connection::reset);
+
+  Nan::SetPrototypeMethod(tpl, "setPostReq", Connection::setPostReq);
+  Nan::SetPrototypeMethod(tpl, "setPutReq", Connection::setPutReq);
+  Nan::SetPrototypeMethod(tpl, "setGetReq", Connection::setGetReq);
+  Nan::SetPrototypeMethod(tpl, "setPatchReq", Connection::setPatchReq);
+  Nan::SetPrototypeMethod(tpl, "setDeleteReq", Connection::setDeleteReq);
 
   // Provides Javascript with Connection constructor
   // function
@@ -94,9 +99,7 @@ NAN_METHOD(Connection::setPostField){
   auto vbuffer = std::make_shared<::arangodb::velocypack::Buffer<uint8_t>>();
   vbuffer->append(bufferData, bufferLength);
 
-
-  std::cout << "connection.cpp" << __LINE__ << ::arangodb::velocypack::Slice(vbuffer->data()).toJson();
-
+  //std::cout << "connection.cpp" << __LINE__ << ::arangodb::velocypack::Slice(vbuffer->data()).toJson();
 
   //get connection
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
@@ -106,12 +109,6 @@ NAN_METHOD(Connection::setPostField){
   pLibCon->setPostField(vbuffer);
 
 }
-NAN_METHOD(Connection::setPostReq){
-  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
-  Connection::Ptr pLibCon = pCon->_pConnection;
-  pLibCon->setPostReq();
-}
-
 NAN_METHOD(Connection::setBuffer){
   Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
@@ -135,6 +132,37 @@ NAN_METHOD(Connection::setUrl){
   Connection::Ptr pLibCon = pCon->_pConnection;
   pLibCon->setUrl(*Nan::ObjectWrap::Unwrap<ConnectionUrl>(info[0]->ToObject())->cppClass());
 }
+
+NAN_METHOD(Connection::setPostReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPostReq();
+}
+
+NAN_METHOD(Connection::setPutReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPutReq();
+}
+
+NAN_METHOD(Connection::setDeleteReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setDeleteReq();
+}
+
+NAN_METHOD(Connection::setGetReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setGetReq();
+}
+
+NAN_METHOD(Connection::setPatchReq){
+  Connection* pCon = Nan::ObjectWrap::Unwrap<Connection>(info.Holder());
+  Connection::Ptr pLibCon = pCon->_pConnection;
+  pLibCon->setPatchReq();
+}
+
 ////
 
 NAN_METHOD(Connection::EnumValues) {
@@ -198,16 +226,24 @@ NAN_METHOD(Connection::Run) {
 
 NAN_METHOD(Connection::Result) {
   typedef arangodb::dbinterface::HttpConnection HttpConnection;
-  typedef arangodb::dbinterface::Connection::VPack VPack;
+
+  //typedef arangodb::dbinterface::Connection::VPack VPack;
+  typedef std::shared_ptr<::arangodb::velocypack::Buffer<uint8_t>> VPack;
+
+
   if (info.Length() > 0) {
     Nan::ThrowTypeError("No arguments required");
     return;
   }
   Connection* pCon = ObjectWrap::Unwrap<Connection>(info.Holder());
   Connection::Ptr pLibCon = pCon->_pConnection;
-  VPack vpack = pLibCon->result();
-  std::string res = HttpConnection::json(vpack);
-  info.GetReturnValue().Set(Nan::New(res.c_str()).ToLocalChecked());
+  VPack resultVPack = pLibCon->result();
+  info.GetReturnValue().Set(
+    Nan::CopyBuffer(
+      reinterpret_cast<char*>(resultVPack->data()),
+      resultVPack->size()
+    ).ToLocalChecked()
+  );
 }
 
 //

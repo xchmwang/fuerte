@@ -51,11 +51,15 @@ class Connection : public Nan::ObjectWrap {
   static NAN_METHOD(Address);
   static NAN_METHOD(New);
   static NAN_METHOD(setPostField);
-  static NAN_METHOD(setPostReq);
   static NAN_METHOD(setBuffer);
   static NAN_METHOD(setHeaderOpts);
   static NAN_METHOD(setUrl);
   static NAN_METHOD(reset);
+  static NAN_METHOD(setPostReq);
+  static NAN_METHOD(setDeleteReq);
+  static NAN_METHOD(setGetReq);
+  static NAN_METHOD(setPutReq);
+  static NAN_METHOD(setPatchReq);
 
   static NAN_MODULE_INIT(Init);
   static v8::Local<v8::Value> NewInstance(v8::Local<v8::Value> arg);
