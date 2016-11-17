@@ -20,8 +20,9 @@ option(FUERTE_EXAMPLES "Build EXAMPLES" OFF)
 
 #########################################################################################
 # Dependencies
-find_package(Boost COMPONENTS serialization system REQUIRED)
+
 option(BuildVelocyPackExamples "Build examples" OFF)
+add_subdirectory(3rdParty/cmake-for-boost)
 add_subdirectory(3rdParty/velocypack)
 add_subdirectory(3rdParty/curlpp2)
 
@@ -50,7 +51,6 @@ add_library(fuerte STATIC
 #  xxhash.cpp
 
 target_include_directories(fuerte PUBLIC
-    ${Boost_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/curlpp2/include
 )
@@ -63,7 +63,7 @@ target_include_directories(fuerte PUBLIC
 target_link_libraries(fuerte PUBLIC
     velocypack
     curlpp
-    ${Boost_LIBRARIES}
+    Boost::system
 )
 target_compile_definitions(fuerte PUBLIC
     BOOST_ASIO_DISABLE_THREADS
