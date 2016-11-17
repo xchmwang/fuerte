@@ -75,7 +75,6 @@ add_library(fuerte-next STATIC
 )
 
 target_include_directories(fuerte-next PUBLIC
-    ${Boost_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/curlpp2/include
 )
