@@ -1,3 +1,27 @@
+################################################################################
+### DISCLAIMER
+###
+### Copyright 2016 ArangoDB GmbH, Cologne, Germany
+###
+### Licensed under the Apache License, Version 2.0 (the "License");
+### you may not use this file except in compliance with the License.
+### You may obtain a copy of the License at
+###
+###     http://www.apache.org/licenses/LICENSE-2.0
+###
+### Unless required by applicable law or agreed to in writing, software
+### distributed under the License is distributed on an "AS IS" BASIS,
+### WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+### See the License for the specific language governing permissions and
+### limitations under the License.
+###
+### Copyright holder is ArangoDB GmbH, Cologne, Germany
+###
+### @author Frank Celler
+### @author Jan Uhde
+### @author John Bufton
+################################################################################
+
 cmake_minimum_required(VERSION 3.6)
 
 project(fuerte CXX)
@@ -8,19 +32,24 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(UNIX)
-    # -fPIC here as curlpp is borken
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  # -fPIC here as curlpp is broken
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
-#########################################################################################
-# Configuration
+################################################################################
+## Configuration
+################################################################################
+
 option(FUERTE_TESTS    "Build Tests" OFF)
 option(FUERTE_EXAMPLES "Build EXAMPLES" OFF)
 
-#########################################################################################
-# Dependencies
+################################################################################
+## Dependencies
+################################################################################
+
 set(CMAKE_BOOST_COMPONENTS "system")
 find_package(Boost COMPONENTS ${CMAKE_BOOST_COMPONENTS})
+
 if(Boost_FOUND)
     message(STATUS "== Using Boost provided by your system")
 else()
@@ -31,8 +60,10 @@ option(BuildVelocyPackExamples "Build examples" OFF)
 add_subdirectory(3rdParty/velocypack)
 add_subdirectory(3rdParty/curlpp2)
 
-#########################################################################################
-# Main Project
+################################################################################
+## Main Project
+################################################################################
+
 add_library(fuerte-old STATIC EXCLUDE_FROM_ALL
     src/old/ConnectionUrl.cpp
     src/old/HttpConnection.cpp
@@ -49,17 +80,11 @@ add_library(fuerte-old STATIC EXCLUDE_FROM_ALL
     src/old/HeaderMulti.cpp
     src/old/HeaderLoader.cpp
 )
-#  xxhash.cpp
 
 target_include_directories(fuerte-old PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/curlpp2/include
 )
-
-# FIXME
-#target_include_directories(fuerte PRIVATE
-#    ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/curlpp2/include
-#)
 
 target_link_libraries(fuerte-old PUBLIC
     velocypack
@@ -76,13 +101,13 @@ set_target_properties(fuerte-old velocypack curlpp PROPERTIES POSITION_INDEPENDE
 
 ## fuerte-next
 add_library(fuerte STATIC
-    src/database.cpp
-    src/collection.cpp
-    src/request.cpp
-    src/connection.cpp
-    src/vst.cpp
-    src/loop.cpp
+    src/ConnectionBuilder.cpp
+    src/HttpCommunicator.cpp
+    src/HttpConnection.cpp
+    src/LoopProvider.cpp
+    src/Request.cpp
     src/asio.cpp
+    src/Connection.cpp
 )
 
 target_link_libraries(fuerte PUBLIC
@@ -94,6 +119,14 @@ target_link_libraries(fuerte PUBLIC
 target_include_directories(fuerte PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/curlpp2/include
+)
+
+add_executable(fuerte-get
+  tools/fuerte-get.cpp
+)
+
+target_link_libraries(fuerte-get
+  fuerte
 )
 
 #########################################################################################

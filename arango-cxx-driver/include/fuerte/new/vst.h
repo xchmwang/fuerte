@@ -1,12 +1,36 @@
-#pragma once
-#include "common_types.h"
+////////////////////////////////////////////////////////////////////////////////
+/// DISCLAIMER
+///
+/// Copyright 2016 ArangoDB GmbH, Cologne, Germany
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
+///
+/// Copyright holder is ArangoDB GmbH, Cologne, Germany
+///
+/// @author Frank Celler
+/// @author Jan Uhde
+/// @author John Bufton
+////////////////////////////////////////////////////////////////////////////////
 
-#include <string>
-#include <memory>
-#include <stdexcept>
-#include <unordered_map>
+#ifndef ARANGO_CXX_DRIVER_VST_H
+#define ARANGO_CXX_DRIVER_VST_H 1
 
-namespace arangodb { namespace rest { inline namespace v2 { namespace vst {
+#include <fuerte/types.h>
+
+namespace arangodb {
+namespace fuerte {
+inline namespace v1 {
+namespace vst {
 
 class IncompleteMessage;
 using MessageID = uint64_t;
@@ -15,7 +39,7 @@ using MessageMap = std::unordered_map<MessageID, IncompleteMessage>;
 static size_t const bufferLength = 4096UL;
 static size_t const chunkMaxBytes = 1000UL;
 
-//vst protocol header
+// vst protocol header
 struct Header {
   std::size_t headerLength;
   uint32_t chunkLength;
@@ -26,47 +50,48 @@ struct Header {
 };
 
 struct ReadBufferInfo {
-	ReadBufferInfo()
-		: currentChunkLength(0)
-    , readBufferOffset(0)
-    , cleanupLength(bufferLength - chunkMaxBytes - 1)
-		{}
+  ReadBufferInfo()
+      : currentChunkLength(0),
+        readBufferOffset(0),
+        cleanupLength(bufferLength - chunkMaxBytes - 1) {}
 
-    uint32_t currentChunkLength; // size of chunk processed or 0 when expecting
-                                 // new chunk
-    size_t readBufferOffset;     // data up to this position has been processed
-    std::size_t cleanupLength;   // length of data after that the read buffer
-                                 // will be cleaned
-  };
+  uint32_t currentChunkLength;  // size of chunk processed or 0 when expecting
+                                // new chunk
+  size_t readBufferOffset;      // data up to this position has been processed
+  std::size_t cleanupLength;    // length of data after that the read buffer
+                                // will be cleaned
+};
 
 struct IncompleteMessage {
   IncompleteMessage(uint32_t length, std::size_t numberOfChunks)
-    : length(length)
-    , buffer(length)
-    , numberOfChunks(numberOfChunks)
-    , currentChunk(0)
-    {}
+      : length(length),
+        buffer(length),
+        numberOfChunks(numberOfChunks),
+        currentChunk(0) {}
 
   uint32_t length;  // length of total message in bytes
-  VBuffer  buffer;
+  VBuffer buffer;
   std::size_t numberOfChunks;
   std::size_t currentChunk;
 };
 
-Header readVstHeader(uint8_t const * const bufferBegin, ReadBufferInfo& info);
+Header readVstHeader(uint8_t const* const bufferBegin, ReadBufferInfo& info);
 
-std::size_t isChunkComplete(uint8_t const* start, std::size_t length, ReadBufferInfo& info);
-std::size_t isChunkComplete(uint8_t const* start, uint8_t const* end, ReadBufferInfo& info) {
+std::size_t isChunkComplete(uint8_t const* start, std::size_t length,
+                            ReadBufferInfo& info);
+std::size_t isChunkComplete(uint8_t const* start, uint8_t const* end,
+                            ReadBufferInfo& info) {
   return isChunkComplete(start, std::distance(start, end), info);
 }
 
-std::size_t validateAndCount(uint8_t const* vpHeaderStart, uint8_t const* vpEnd);
-std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
+std::size_t validateAndCount(uint8_t const* vpHeaderStart,
+                             uint8_t const* vpEnd);
+std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len) {
   return validateAndCount(vpHeaderStart, vpHeaderStart + len);
 }
 
-//template <typename T>
-//std::size_t appendToBuffer(basics::StringBuffer* buffer, T& value) {
+// template <typename T>
+// std::size_t appendToBuffer(basics::StringBuffer* buffer, T& value) {
 //  constexpr std::size_t len = sizeof(T);
 //  char charArray[len];
 //  char const* charPtr = charArray;
@@ -75,7 +100,7 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //  return len;
 //}
 //
-//inline constexpr std::size_t chunkHeaderLength(bool firstOfMany) {
+// inline constexpr std::size_t chunkHeaderLength(bool firstOfMany) {
 //  // chunkLength uint32 , chunkX uint32 , id uint64 , messageLength unit64
 //  return sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint64_t) +
 //         (firstOfMany ? sizeof(uint64_t) : 0);
@@ -84,7 +109,7 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //// Send Message Created from Slices
 //
 //// working version of single chunk message creation
-//inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkDetail(
+// inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkDetail(
 //    std::vector<VPackSlice> const& slices, bool isFirstChunk, uint32_t chunk,
 //    uint64_t id, uint64_t totalMessageLength = 0) {
 //  using basics::StringBuffer;
@@ -114,7 +139,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //      dataLength + static_cast<uint32_t>(chunkHeaderLength(firstOfMany));
 //
 //  auto buffer =
-//      std::make_unique<StringBuffer>(TRI_UNKNOWN_MEM_ZONE, chunkLength, false);
+//      std::make_unique<StringBuffer>(TRI_UNKNOWN_MEM_ZONE, chunkLength,
+//      false);
 //
 //  appendToBuffer(buffer.get(), chunkLength);
 //  appendToBuffer(buffer.get(), chunk);
@@ -133,7 +159,7 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //}
 //
 ////  slices, isFirstChunk, chunk, id, totalMessageLength
-//inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkSingle(
+// inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkSingle(
 //    std::vector<VPackSlice> const& slices, uint64_t id) {
 //  return createChunkForNetworkDetail(slices, true, 1, id, 0 /*unused*/);
 //}
@@ -142,7 +168,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //// by moving slices into the createion functions - This is not acceptable for
 //// big slices
 ////
-//// inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkMultiFirst(
+//// inline std::unique_ptr<basics::StringBuffer>
+///createChunkForNetworkMultiFirst(
 ////    std::vector<VPackSlice> const& slices, uint64_t id, uint32_t
 ////    numberOfChunks,
 ////    uint32_t totalMessageLength) {
@@ -152,14 +179,15 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 ////
 //// inline std::unique_ptr<basics::StringBuffer>
 //// createChunkForNetworkMultiFollow(
-////    std::vector<VPackSlice> const& slices, uint64_t id, uint32_t chunkNumber,
+////    std::vector<VPackSlice> const& slices, uint64_t id, uint32_t
+///chunkNumber,
 ////    uint32_t totalMessageLength) {
 ////  return createChunkForNetworkDetail(slices, false, chunkNumber, id, 0);
 ////}
 //
 //// helper functions for sending chunks when given a string buffer as input
 //// working version of single chunk message creation
-//inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkDetail(
+// inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkDetail(
 //    char const* data, std::size_t begin, std::size_t end, bool isFirstChunk,
 //    uint32_t chunk, uint64_t id, uint64_t totalMessageLength = 0) {
 //  using basics::StringBuffer;
@@ -185,7 +213,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //      dataLength + static_cast<uint32_t>(chunkHeaderLength(firstOfMany));
 //
 //  auto buffer =
-//      std::make_unique<StringBuffer>(TRI_UNKNOWN_MEM_ZONE, chunkLength, false);
+//      std::make_unique<StringBuffer>(TRI_UNKNOWN_MEM_ZONE, chunkLength,
+//      false);
 //
 //  appendToBuffer(buffer.get(), chunkLength);
 //  appendToBuffer(buffer.get(), chunk);
@@ -200,14 +229,16 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //  return buffer;
 //}
 //
-//inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkMultiFirst(
+// inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkMultiFirst(
 //    char const* data, std::size_t begin, std::size_t end, uint64_t id,
 //    uint32_t numberOfChunks, uint64_t totalMessageLength) {
-//  return createChunkForNetworkDetail(data, begin, end, true, numberOfChunks, id,
+//  return createChunkForNetworkDetail(data, begin, end, true, numberOfChunks,
+//  id,
 //                                     totalMessageLength);
 //}
 //
-//inline std::unique_ptr<basics::StringBuffer> createChunkForNetworkMultiFollow(
+// inline std::unique_ptr<basics::StringBuffer>
+// createChunkForNetworkMultiFollow(
 //    char const* data, std::size_t begin, std::size_t end, uint64_t id,
 //    uint32_t chunkNumber) {
 //  return createChunkForNetworkDetail(data, begin, end, false, chunkNumber, id,
@@ -216,7 +247,7 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //
 //// this function will be called when we send multiple compressed
 //// or uncompressed chunks
-//inline void send_many(
+// inline void send_many(
 //    std::vector<std::unique_ptr<basics::StringBuffer>>& resultVecRef,
 //    uint64_t id, std::size_t maxChunkBytes,
 //    std::unique_ptr<basics::StringBuffer> completeMessage,
@@ -230,7 +261,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //  uint32_t numberOfChunks = 1;
 //  {  // calcuate the number of chunks taht will be send
 //    std::size_t bytesToSend = totalLen - maxChunkBytes +
-//                              chunkHeaderLength(true);  // data for first chunk
+//                              chunkHeaderLength(true);  // data for first
+//                              chunk
 //    while (bytesToSend >= maxBytes) {
 //      bytesToSend -= maxBytes;
 //      ++numberOfChunks;
@@ -243,7 +275,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //  // send fist
 //  resultVecRef.push_back(
 //      createChunkForNetworkMultiFirst(completeMessage->c_str(), offsetBegin,
-//                                      offsetEnd, id, numberOfChunks, totalLen));
+//                                      offsetEnd, id, numberOfChunks,
+//                                      totalLen));
 //
 //  std::uint32_t chunkNumber = 0;
 //  while (offsetEnd + maxBytes <= totalLen) {
@@ -264,7 +297,8 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //}
 //
 //// this function will be called by client code
-//inline std::vector<std::unique_ptr<basics::StringBuffer>> createChunkForNetwork(
+// inline std::vector<std::unique_ptr<basics::StringBuffer>>
+// createChunkForNetwork(
 //    std::vector<VPackSlice> const& slices, uint64_t id,
 //    std::size_t maxChunkBytes, bool compress = false) {
 //  /// variables used in this function
@@ -343,5 +377,9 @@ std::size_t validateAndCount(uint8_t const* vpHeaderStart, std::size_t len){
 //
 //
 //
+}
+}
+}
+}
 
-}}}}
+#endif
