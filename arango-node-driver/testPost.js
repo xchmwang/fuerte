@@ -16,7 +16,7 @@ conUrl.setTailUrl("/_api/document/testcol")
 conn.reset() // must be called first
 conn.setHeaderOpts();
 conn.setUrl(conUrl)
-request_data = vpack.encode({"data" : "banana"})
+request_data = vpack.encode({"data" : "banana", "_key": "123456"})
 conn.setPostField(request_data)
 conn.setPostReq();
 conn.setBuffer(); // must be called last

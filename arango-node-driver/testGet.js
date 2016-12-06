@@ -11,7 +11,7 @@ var conn = server.makeConnection();
 conUrl = new arangodb.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
 conUrl.setDbName("testdb")
-conUrl.setTailUrl("/_api/document/testcol/670512")
+conUrl.setTailUrl("/_api/document/testcol/123456")
 
 conn.reset() // must be called first
 conn.setHeaderOpts();
