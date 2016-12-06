@@ -11,14 +11,14 @@ var conn = server.makeConnection();
 conUrl = new arangodb.ConnectionUrl()
 conUrl.setServerUrl(serverUrl)
 conUrl.setDbName("testdb")
-conUrl.setTailUrl("/_api/document/testcol")
+conUrl.setTailUrl("/_api/document/testcol/670512")
 
 conn.reset() // must be called first
 conn.setHeaderOpts();
 conn.setUrl(conUrl)
-request_data = vpack.encode({"data" : "banana"})
-conn.setPostField(request_data)
-conn.setPostReq();
+//request_data = vpack.encode({"data" : "banana"})
+//conn.setPostField(request_data)
+conn.setGetReq();
 conn.setBuffer(); // must be called last
 
 //fire request
@@ -40,6 +40,7 @@ new Promise(function (resolve, reject) {
 })
 .then(function () {
   let vpResult = conn.Result();
+  console.log('server response', vpResult)
   jsResult = vpack.decode(vpResult)
   console.log("result :", jsResult);
 })
