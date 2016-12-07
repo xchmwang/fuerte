@@ -39,7 +39,7 @@ new Promise(function (resolve, reject) {
  run();
 })
 .then(function () {
-  let vpResult = conn.Result();
+  var vpResult = conn.Result();
   jsResult = vpack.decode(vpResult)
   console.log("result :", jsResult);
 })
