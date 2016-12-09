@@ -34,7 +34,7 @@ namespace fuerte {
 inline namespace v1 {
 class LoopProvider;
 
-class Connection : public std::enable_shared_from_this<Connection> {
+class Connection {
   friend class ConnectionBuilder;
 
  private:

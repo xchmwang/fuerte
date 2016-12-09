@@ -24,19 +24,32 @@
 
 #include <fuerte/LoopProvider.h>
 
+#include <boost/asio.hpp>
+
 #include "HttpCommunicator.h"
 
 namespace arangodb {
 namespace fuerte {
 inline namespace v1 {
 std::shared_ptr<http::HttpCommunicator> LoopProvider::http() {
-  _http = std::make_shared<http::HttpCommunicator>();
+  if (_http == nullptr) {
+    _http = std::make_shared<http::HttpCommunicator>();
+  }
+
   return _http;
 }
 
+std::shared_ptr<boost::asio::io_service> LoopProvider::vst() {
+  if (_vst == nullptr) {
+    _vst = std::make_shared<boost::asio::io_service>();
+  }
+
+  return _vst;
+}
+
 void LoopProvider::run() {
-  while (true) {
-    if (_http != nullptr) {
+  if (_http != nullptr) {
+    while (true) {
       int left = _http->workOnce();
 
       if (left == 0) {
@@ -45,6 +58,10 @@ void LoopProvider::run() {
 
       _http->wait();
     }
+  }
+
+  if (_vst != nullptr) {
+    _vst->run();
   }
 }
 

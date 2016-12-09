@@ -24,8 +24,6 @@
 
 #include "HttpConnection.h"
 
-#include <iostream>
-
 namespace arangodb {
 namespace fuerte {
 inline namespace v1 {
@@ -47,7 +45,7 @@ void HttpConnection::sendRequest(std::unique_ptr<Request> request,
 
   auto const& parameter = request->_header._parameter;
 
-  if (! parameter.empty()) {
+  if (!parameter.empty()) {
     std::string sep = "?";
 
     for (auto p : parameter) {
@@ -55,6 +53,9 @@ void HttpConnection::sendRequest(std::unique_ptr<Request> request,
       destination += sep + p.first + "=" + p.second;
       sep = "&";
     }
+
+#warning TODO set header
+#warning TODO authentication
   }
 
   _communicator->queueRequest(destination, std::move(request), callbacks);

@@ -37,6 +37,8 @@ class ConnectionInterface {
   virtual ~ConnectionInterface() = default;
 
  public:
+  virtual void start() = 0;
+
   virtual void sendRequest(std::unique_ptr<Request>, OnSuccessCallback,
                            OnErrorCallback) = 0;
 };

@@ -33,14 +33,14 @@ namespace arangodb {
 namespace fuerte {
 inline namespace v1 {
 namespace http {
-class LoopProvider;
-
 class HttpConnection : public ConnectionInterface {
  public:
   HttpConnection(std::shared_ptr<HttpCommunicator>,
                  detail::ConnectionConfiguration);
 
  public:
+  void start() override {}
+
   void sendRequest(std::unique_ptr<Request>, OnSuccessCallback,
                    OnErrorCallback) override;
 

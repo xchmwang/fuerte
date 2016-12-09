@@ -28,6 +28,7 @@
 #include <fuerte/LoopProvider.h>
 
 #include "HttpConnection.h"
+#include "VstConnection.h"
 
 namespace arangodb {
 namespace fuerte {
@@ -45,6 +46,7 @@ void Connection::build(std::shared_ptr<LoopProvider> loop) {
         break;
 
       case TransportType::Vst:
+        _connection.reset(new vst::VstConnection(loop->vst(), _configuration));
         break;
 
       default:
@@ -52,6 +54,8 @@ void Connection::build(std::shared_ptr<LoopProvider> loop) {
                                     to_string(_configuration._connType) +
                                     "'");
     }
+
+    _connection->start();
   }
 }
 }

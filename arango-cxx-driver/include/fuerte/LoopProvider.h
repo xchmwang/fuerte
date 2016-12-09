@@ -27,6 +27,12 @@
 
 #include <fuerte/types.h>
 
+namespace boost {
+namespace asio {
+class io_service;
+}
+}
+
 namespace arangodb {
 namespace fuerte {
 inline namespace v1 {
@@ -37,12 +43,14 @@ class HttpCommunicator;
 class LoopProvider {
  public:
   std::shared_ptr<http::HttpCommunicator> http();
+  std::shared_ptr<boost::asio::io_service> vst();
 
   void run();
   void shutdown();
 
  private:
   std::shared_ptr<http::HttpCommunicator> _http;
+  std::shared_ptr<boost::asio::io_service> _vst;
 };
 }
 }
