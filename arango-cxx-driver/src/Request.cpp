@@ -1,4 +1,4 @@
-#include <fuerte/request.h>
+#include <fuerte/Request.h>
 
 namespace arangodb {
 namespace fuerte {

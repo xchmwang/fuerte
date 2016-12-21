@@ -47,6 +47,8 @@ option(FUERTE_EXAMPLES "Build EXAMPLES" OFF)
 ## Dependencies
 ################################################################################
 
+find_package(Threads REQUIRED)
+
 set(CMAKE_BOOST_COMPONENTS "system")
 find_package(Boost COMPONENTS ${CMAKE_BOOST_COMPONENTS})
 
@@ -128,6 +130,7 @@ add_executable(fuerte-get
 
 target_link_libraries(fuerte-get
   fuerte
+  ${CMAKE_THREAD_LIBS_INIT}
 )
 
 #########################################################################################

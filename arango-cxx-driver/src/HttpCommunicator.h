@@ -109,7 +109,9 @@ class HttpCommunicator {
       }
 
       curl_easy_setopt(_handle, CURLOPT_PRIVATE, _rip.get());
+#ifdef CURLOPT_PATH_AS_IS
       curl_easy_setopt(_handle, CURLOPT_PATH_AS_IS, 1L);
+#endif
     }
 
     ~CurlHandle() {
