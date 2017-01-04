@@ -22,7 +22,7 @@
 ### @author John Bufton
 ################################################################################
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 
 project(fuerte CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -58,6 +58,8 @@ else()
     add_subdirectory(3rdParty/cmake-for-boost)
 endif()
 
+find_package(Threads REQUIRED)
+
 option(BuildVelocyPackExamples "Build examples" OFF)
 add_subdirectory(3rdParty/velocypack)
 add_subdirectory(3rdParty/curlpp2)
@@ -92,6 +94,7 @@ target_link_libraries(fuerte-old PUBLIC
     velocypack
     curlpp
     Boost::system
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 target_compile_definitions(fuerte-old PUBLIC
     BOOST_ASIO_DISABLE_THREADS
