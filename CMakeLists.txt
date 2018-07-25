@@ -175,13 +175,13 @@ target_link_libraries(fuerte-get PRIVATE
     fuerte
 )
 
-#add_executable(vst-echo-server
-#    tools/vst-echo-server.cpp
-#)
-#
-#target_link_libraries(vst-echo-server PRIVATE
-#    fuerte
-#)
+add_executable(fuertebench
+tools/fuertebench.cpp
+)
+
+target_link_libraries(fuertebench PRIVATE
+fuerte
+)
 
 #########################################################################################
 # Tests
