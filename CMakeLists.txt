@@ -25,18 +25,18 @@ find_package(Threads REQUIRED)
 set(CMAKE_BOOST_COMPONENTS "system" "thread")
 find_package(Boost REQUIRED COMPONENTS ${CMAKE_BOOST_COMPONENTS})
 
-if(VELOCYPACK_SOURCE_DIR)
-    option(BuildVelocyPackExamples "Build examples" OFF)
-    add_subdirectory(${VELOCYPACK_SOURCE_DIR} ./vpack-build)
-    set(VELOCYPACK_LIBRARIES velocypack)
-else()
-    include(FindVelocypack)
-    find_package(Velocypack)
+#if(VELOCYPACK_SOURCE_DIR)
+    #option(BuildVelocyPackExamples "Build examples" OFF)
+    #add_subdirectory(${VELOCYPACK_SOURCE_DIR} ./vpack-build)
+    #set(VELOCYPACK_LIBRARIES velocypack)
+#else()
+    #include(FindVelocypack)
+    #find_package(Velocypack)
 
-    if (NOT ${VELOCYPACK_FOUND})
-        message(FATAL_ERROR "Velocypack not found. Clone from https://github.com/arangodb/velocypack and install it")
-    endif()
-endif()
+    #if (NOT ${VELOCYPACK_FOUND})
+        #message(FATAL_ERROR "Velocypack not found. Clone from https://github.com/arangodb/velocypack and install it")
+    #endif()
+#endif()
 
 #########################################################################################
 # compiler options
@@ -122,7 +122,7 @@ endif ()
 
 
 ## fuerte
-add_library(fuerte STATIC
+add_library(fuerte SHARED
 #    src/api/collection.cpp
 #    src/api/database.cpp
     src/connection.cpp
@@ -138,7 +138,6 @@ add_library(fuerte STATIC
     src/vst.cpp
     src/VstConnection.cpp
     src/connection.cpp
-    src/http_parser/http_parser.c
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -151,6 +150,8 @@ target_link_libraries(fuerte PUBLIC
     ${Boost_LIBRARIES}
     ${OPENSSL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+    velocypack
+    http_parser
 )
 
 target_include_directories(fuerte PUBLIC
